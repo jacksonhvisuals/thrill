@@ -2,6 +2,14 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { useEffect, useState } from "react";
 import { connectSimpleFin, fetchBalances, fetchTransactions, type Balance, type Tx } from "./lib/api";
 import * as Dialog from "@radix-ui/react-dialog";
+import {
+  Card,
+  DataList,
+  Flex,
+  Text,
+  Badge,
+  Separator,
+} from "@radix-ui/themes";
 
 function ConnectSimpleFin() {
   const [open, setOpen] = useState(false);
@@ -68,24 +76,90 @@ function Balances() {
 function Transactions() {
   const [data, setData] = useState<Tx[]>([]);
   const [err, setErr] = useState("");
-  useEffect(()=>{ fetchTransactions(15).then(setData).catch(e=>setErr(e.message)); },[]);
-  const fmt = (s:number)=> new Date(s*1000).toLocaleDateString();
+
+  useEffect(() => {
+    fetchTransactions(15).then(setData).catch((e) => setErr(e.message));
+  }, []);
+
+  const fmtDate = (sec: number) =>
+    new Date(sec * 1000).toLocaleDateString();
+
+  const amtNum = (amt: string) => Number.parseFloat(amt);
+  const isNeg = (amt: string) => amtNum(amt) < 0;
+
   return (
-    <div className="rounded-2xl shadow p-4">
-      <h2 className="text-lg font-semibold mb-2">Last 15 Transactions</h2>
-      {err && <p className="text-red-600">{err}</p>}
-      <ul className="divide-y">
-        {data.map(t=>(
-          <li key={t.id} className="py-2 flex items-center justify-between">
-            <div className="min-w-0">
-              <div className="font-medium truncate">{t.description}</div>
-              <div className="text-sm text-neutral-500">{fmt(t.posted)}</div>
-            </div>
-            <div className="ml-4 tabular-nums">{t.amount}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Card size="3" variant="surface">
+      <Flex direction="column" gap="3">
+        <Text as="h2" size="4" weight="bold">
+          Last 15 Transactions
+        </Text>
+
+        {err && (
+          <Text color="red" size="2">
+            {err}
+          </Text>
+        )}
+
+        {data.length === 0 && !err ? (
+          <Text color="gray" size="2">
+            No transactions yet.
+          </Text>
+        ) : (
+          <Flex direction="column" gap="3">
+            {data.map((t, i) => (
+              <div key={t.id}>
+                <DataList.Root size="2">
+                  <DataList.Item align="center">
+                    <DataList.Label minWidth="88px">Date</DataList.Label>
+                    <DataList.Value>{fmtDate(t.posted)}</DataList.Value>
+                  </DataList.Item>
+
+                  <DataList.Item align="center">
+                    <DataList.Label minWidth="88px">Description</DataList.Label>
+                    <DataList.Value>
+                      <Text truncate title={t.description}>
+                        {t.description}
+                      </Text>
+                    </DataList.Value>
+                  </DataList.Item>
+
+                  <DataList.Item align="center">
+                    <DataList.Label minWidth="88px">Amount</DataList.Label>
+                    <DataList.Value>
+                      <Text
+                        weight="medium"
+                        color={isNeg(t.amount) ? "red" : "green"}
+                        style={{ fontVariantNumeric: "tabular-nums" }}
+                      >
+                        {t.amount}
+                      </Text>
+                    </DataList.Value>
+                  </DataList.Item>
+
+                  <DataList.Item align="center">
+                    <DataList.Label minWidth="88px">Status</DataList.Label>
+                    <DataList.Value>
+                      {t.pending ? (
+                        <Badge color="yellow" variant="soft">
+                          Pending
+                        </Badge>
+                      ) : (
+                        <Badge color="green" variant="soft">
+                          Posted
+                        </Badge>
+                      )}
+                    </DataList.Value>
+                  </DataList.Item>
+                </DataList.Root>
+
+                {/* Divider between rows */}
+                {i < data.length - 1 && <Separator my="3" />}
+              </div>
+            ))}
+          </Flex>
+        )}
+      </Flex>
+    </Card>
   );
 }
 
