@@ -4,11 +4,14 @@ import './index.css'
 import { Theme } from "@radix-ui/themes"
 import "@radix-ui/themes/styles.css"
 import App from './App.tsx'
+import Layout from "@/app/layout";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Theme accentColor="iris" grayColor="mauve" radius="large" scaling="100%">
-      <App />
+	  <Theme accentColor="crimson" grayColor="sand" radius="large" scaling="95%">
+	  <Layout>
+		  <App />
+	  </Layout>
     </Theme>
   </StrictMode>
 );

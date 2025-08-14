@@ -167,7 +167,7 @@ export default function App() {
   return (
     <main className="mx-auto max-w-3xl p-6 space-y-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">My Finance</h1>
+        <h1 className="text-2xl font-bold">Thrill</h1>
         <ConnectSimpleFin />
       </header>
 
