@@ -2,6 +2,8 @@
 import { toTypedSchema } from "@vee-validate/zod"
 import { useForm } from "vee-validate"
 import * as z from "zod"
+import { ref } from 'vue'
+import { useApiKeyStore } from '@/stores/apiKey'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,26 +16,28 @@ import {
 import { Input } from "@/components/ui/input"
 
 const formSchema = toTypedSchema(z.object({
-  username: z.string().min(2).max(50),
+  apiKey: z.string().min(2).max(50),
 }))
 
 const { isFieldDirty, handleSubmit } = useForm({
   validationSchema: formSchema,
 })
 
+const store = useApiKeyStore()
+const key = ref(store.apiKey)
 const onSubmit = handleSubmit((values) => {
-    console.log("Submitted!")
+    store.set(values.apiKey)
 })
 </script>
 
 <template>
   <div class="w-full p-4">
   <form class="space-y-6 w-full" @submit="onSubmit">
-    <FormField v-slot="{ componentField }" name="username" :validate-on-blur="!isFieldDirty" class="w-full">
+    <FormField v-slot="{ componentField }" name="apiKey" :validate-on-blur="!isFieldDirty" class="w-full">
       <FormItem>
         <FormLabel>API Key</FormLabel>
         <FormControl>
-          <Input type="text" placeholder="h10gtKqjOpfh..." v-bind="componentField" />
+          <Input type="text" :placeholder="key" v-bind="componentField" />
         </FormControl>
         <FormMessage />
       </FormItem>

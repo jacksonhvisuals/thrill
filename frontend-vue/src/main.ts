@@ -4,6 +4,7 @@ import App from './App.vue'
 import DashboardView from '../pages/DashboardView.vue'
 import SettingsView from '../pages/SettingsView.vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
+import { createPinia } from 'pinia'
 
 const routes = [
   { path: '/', component: DashboardView },
@@ -14,4 +15,10 @@ const router = createRouter({
   history: createMemoryHistory(),
   routes,
 })
-createApp(App).use(router).mount('#app')
+
+const pinia = createPinia()
+const app = createApp(App)
+
+app.use(router)
+app.use(pinia)
+app.mount('#app')
