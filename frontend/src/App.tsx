@@ -165,7 +165,7 @@ function Transactions() {
 
 export default function App() {
   return (
-    <main className="mx-auto max-w-3xl p-6 space-y-6">
+    <div className="mx-auto w-full p-6 space-y-6">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Thrill</h1>
         <ConnectSimpleFin />
@@ -180,7 +180,7 @@ export default function App() {
         <Tabs.Content value="balances"><Balances/></Tabs.Content>
         <Tabs.Content value="transactions"><Transactions/></Tabs.Content>
       </Tabs.Root>
-    </main>
+    </div>
   );
 }
 
